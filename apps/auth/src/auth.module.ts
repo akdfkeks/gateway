@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { ConfigModule } from '@nestjs/config';
+import { validate } from './config/env.validation';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate,
+    }),
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })
