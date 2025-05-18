@@ -10,6 +10,21 @@ class EnvironmentVariables {
 
   @IsNumber()
   JWT_EXPIRATION: number;
+
+  @IsString()
+  DATABASE_HOST: string;
+
+  @IsNumber()
+  DATABASE_PORT: number;
+
+  @IsString()
+  DATABASE_USERNAME: string;
+
+  @IsString()
+  DATABASE_PASSWORD: string;
+
+  @IsString()
+  DATABASE_NAME: string;
 }
 
 export function validate(config: Record<string, unknown>) {

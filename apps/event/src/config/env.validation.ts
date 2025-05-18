@@ -6,7 +6,19 @@ class EnvironmentVariables {
   APP_PORT: number;
 
   @IsString()
-  DATABASE_URL: string;
+  DATABASE_HOST: string;
+
+  @IsNumber()
+  DATABASE_PORT: number;
+
+  @IsString()
+  DATABASE_USERNAME: string;
+
+  @IsString()
+  DATABASE_PASSWORD: string;
+
+  @IsString()
+  DATABASE_NAME: string;
 }
 
 export function validate(config: Record<string, unknown>) {

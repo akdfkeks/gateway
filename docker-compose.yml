@@ -1,0 +1,76 @@
+version: '3.9'
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: dykim
+      MONGO_INITDB_ROOT_PASSWORD: dykim
+    volumes:
+      - mongo-data-dykim:/data/db
+    ports:
+      - '27017:27017' # enable access from outside
+    networks:
+      - private_network
+      - public_network
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: gateway
+    env_file:
+      - gateway.env
+    environment:
+      - DATABASE_HOST=mongodb
+      - AUTH_SERVICE_HOST=auth
+      - EVENT_SERVICE_HOST=event
+    depends_on:
+      - mongodb
+      - auth
+      - event
+    ports:
+      - '3000:3000' # enable access from outside
+    networks:
+      - private_network
+      - public_network
+
+  auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: auth
+    env_file:
+      - auth.env
+    environment:
+      - DATABASE_HOST=mongodb
+    depends_on:
+      - mongodb
+    networks:
+      - private_network
+
+  event:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: event
+    env_file:
+      - event.env
+    environment:
+      - DATABASE_HOST=mongodb
+    depends_on:
+      - mongodb
+    networks:
+      - private_network
+
+volumes:
+  mongo-data-dykim:
+
+networks:
+  public_network:
+  private_network:
+    internal: true

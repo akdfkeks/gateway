@@ -37,9 +37,9 @@ export class HealthService {
     ];
   }
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async check() {
-    this.logger.log('Checking microservices health...');
+    this.logger.log('Checking microservices status...');
 
     const checkers = this.microServices.map((service) => {
       return async () =>

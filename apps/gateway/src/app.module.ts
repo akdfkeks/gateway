@@ -6,10 +6,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validate } from './config/env.validation';
 import { HealthModule } from './health/health.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { DatabaseModule } from '@app/database';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: 'gateway.env',
       isGlobal: true,
       validate,
     }),
@@ -41,6 +44,19 @@ import { HealthModule } from './health/health.module';
         inject: [ConfigService],
       },
     ]),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        uri: `mongodb://${configService.getOrThrow('DATABASE_HOST')}:${configService.getOrThrow('DATABASE_PORT')}`,
+        dbName: configService.getOrThrow('DATABASE_NAME'),
+        auth: {
+          username: configService.getOrThrow('DATABASE_USERNAME'),
+          password: configService.getOrThrow('DATABASE_PASSWORD'),
+        },
+      }),
+    }),
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
