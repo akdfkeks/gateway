@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validate } from './config/env.validation';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -11,6 +13,8 @@ import { validate } from './config/env.validation';
       isGlobal: true,
       validate,
     }),
+    ScheduleModule.forRoot(),
+    HealthModule,
     ClientsModule.registerAsync([
       {
         name: 'AUTH_SERVICE',
