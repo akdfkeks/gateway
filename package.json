@@ -15,8 +15,7 @@
     "build:all": "concurrently \"yarn build:auth\" \"yarn build:event\" \"yarn build:gateway\"",
     "start:auth": "nest start auth -w --env-file auth.env",
     "start:event": "nest start event -w --env-file event.env",
-    "start:gateway": "nest start gateway -w --env-file gateway.env",
-    "start:all": "yarn start:auth && yarn start:event && yarn start:gateway"
+    "start:gateway": "nest start gateway -w --env-file gateway.env"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.1",
