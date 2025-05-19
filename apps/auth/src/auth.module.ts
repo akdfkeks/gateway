@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { UserHandler } from './handlers/user.handler';
+import { UserRepository } from './infrastructure/repositories/user.repository';
+import { CreateUserUseCase } from './application/usecases/create-user.usecase';
+import { Argon2PasswordHasher } from '@app/common/util/password.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from './config/env.validation';
-import { DatabaseModule } from '@app/database';
 import { MongooseModule } from '@nestjs/mongoose';
+import { DatabaseModule } from '@app/database';
 
 @Module({
   imports: [
@@ -27,7 +29,14 @@ import { MongooseModule } from '@nestjs/mongoose';
     }),
     DatabaseModule,
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [UserHandler],
+  providers: [
+    {
+      provide: 'PasswordHasher',
+      useClass: Argon2PasswordHasher,
+    },
+    CreateUserUseCase,
+    UserRepository,
+  ],
 })
 export class AuthModule {}

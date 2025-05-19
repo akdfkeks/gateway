@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { validate } from './config/env.validation';
 import { HealthModule } from './health/health.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModule } from '@app/database';
+import { AuthClientModule } from '@app/common/microservices/auth-client/auth-client.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -18,32 +17,6 @@ import { DatabaseModule } from '@app/database';
     }),
     ScheduleModule.forRoot(),
     HealthModule,
-    ClientsModule.registerAsync([
-      {
-        name: 'AUTH_SERVICE',
-        imports: [ConfigModule],
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.getOrThrow('AUTH_SERVICE_HOST'),
-            port: configService.getOrThrow('AUTH_SERVICE_PORT'),
-          },
-        }),
-        inject: [ConfigService],
-      },
-      {
-        name: 'EVENT_SERVICE',
-        imports: [ConfigModule],
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.getOrThrow('EVENT_SERVICE_HOST'),
-            port: configService.getOrThrow('EVENT_SERVICE_PORT'),
-          },
-        }),
-        inject: [ConfigService],
-      },
-    ]),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -57,8 +30,9 @@ import { DatabaseModule } from '@app/database';
       }),
     }),
     DatabaseModule,
+    UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
