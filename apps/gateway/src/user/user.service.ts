@@ -8,7 +8,7 @@ export class UserService {
   constructor(private readonly authClient: AuthClientService) {}
 
   async registerUser(dto: CreateUserRequestDto, actor: Actor) {
-    const user = await this.authClient.create(dto, actor);
+    const user = await this.authClient.createUser(dto, actor);
     return user;
   }
 }

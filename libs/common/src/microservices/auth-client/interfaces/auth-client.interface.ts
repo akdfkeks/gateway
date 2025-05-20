@@ -1,12 +1,11 @@
 import { Actor } from '../../types/actor';
-import { CreateUserRequestDto, CreateUserResponseDto } from '../dto/create-user.dto';
+import { UserEntity } from '../domain/entities/user.entity';
+import { CreateUserRequestDto } from '../dto/create-user.dto';
+import { LoginRequestDto, LoginResponseDto } from '../dto/login.dto';
 
 export interface IAuthServiceClient {
-  create(payload: CreateUserRequestDto, actor: Actor): Promise<CreateUserResponseDto>;
-  // updateUser(): Promise<any>;
-  // deleteUser(): Promise<any>;
-  // login(): Promise<any>;
-  // logout(): Promise<any>;
-  // verifyToken(): Promise<any>;
-  // refreshToken(): Promise<any>;
+  createUser(payload: CreateUserRequestDto, actor: Actor): Promise<UserEntity>;
+  login(payload: LoginRequestDto, actor: Actor): Promise<LoginResponseDto>;
+  verifyToken(): Promise<any>;
+  refreshToken(): Promise<any>;
 }

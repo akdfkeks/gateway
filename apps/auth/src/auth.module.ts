@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from './config/env.validation';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseModule } from '@app/database';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { DatabaseModule } from '@app/database';
       }),
     }),
     DatabaseModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [UserHandler],
   providers: [
