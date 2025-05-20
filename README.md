@@ -13,12 +13,12 @@
 설계/구현 단계에서 가진 생각들을 기록하여 다소 러프하게 기록하였습니다.
 
 - 이벤트 조건을 관리하는 방법
-  - 게임에서 발생하는 다양한 데이터가 정형화되어 관리되고 있다는 가정하에, Rule engine과 같은 개념을 활용하면 달성 조건을 보다 유연하고 안전하게 관리할 수 있을듯
+  - 게임에서 발생하는 다양한 데이터가 정형화되어 관리되고 있다는 가정하에, Rule engine 같은 개념을 활용하면 달성 조건을 보다 유연하고 안전하게 관리할 수 있을듯
   - 아마 노코드 플랫폼이나 서비스들이 비슷한 느낌으로 구현되어 있지 않을까 하는 생각이 드는데, n8n 같은 프로젝트의 구현부가 도움될 것 같다
   
 - Microservice
   - 네트워크를 타는 작업에는 timeout을 설정하는데, 늦게라도 성공하는 경우는 어떻게 감지하지?
-    - timeout은 호출자의 일방적인 처리 방식이므로, 일반적으로 각 서비스에서의 작업에 영향을 주지 않음
+    - timeout은 호출자의 일방적인 처리 방식이므로 일반적으로 각 서비스에서의 작업에 영향을 주지 않음
   - global trace id 같은걸 두고 서비스 간 통신에 사용하도록 하여 모든 작업을 rollback 가능하도록 만들면 될까?
   - 근데 지급한 아이템을 사용해버린 경우같이 취소할 수 없는 작업은 어쩌지
     - 취소 가능한 작업인지를 미리 정의하고 해당되는 작업들만 동기적으로 처리하도록 할 수 있을까
@@ -45,13 +45,12 @@
   - 사용자라는 자원만 보더라도 AuthService에서는 비밀번호나 권한 등이 필요하지만 EventService에서는 보상이나 유저의 행동에 대한 정보가 주요 관심사
   - Bounded context의 필요성을 느낀건가
 
-
 - 트랜잭션
   - SAGA나 보상 트랜잭션같은 개념은 이론으로만 알고 있지 실제로 구현해본 적이 없음
   - 중복 지급방지 같은건 사용자 식별자 기준으로 Lock을 걸어주면 되지 않을까?
     - MongoDB에도 document를 잠글 수 있긴 하네
 
-## 주요 기능 및 설계
+## 초기 설계
 
 구현을 완료한 항목은 ✅ 표시하였습니다.
 
@@ -61,15 +60,17 @@
   - [x] 공통 자원 관리를 위한 라이브러리 관리
 
 ### 2. Event Service
-- [ ] Rule engine 기반 사용자 정의 이벤트 조건 설정
-  - [ ] 다양한 경로로 수집된 게임 내 데이터에 기반한 조건 설정 기능
-  - [ ] 유저 식별자 기준 Lock을 사용하여 보상 중복 방지
+- [ ] 유연한 이벤트 조건 설정을 위한 Rule engine 구현
+  - [ ] 다양한 경로로 수집된 게임 내 데이터에 대해 조건을 조합하여 복잡한 규칙 설정 가능
+  - [ ] rule 기반 달성조건 검증 및 보상 지급 자동화
+- [ ] 유저 식별자 기준 Lock을 사용하여 보상 중복 방지
 
 ### 3. Auth Service
-- [x] JWT 발급 및 검증
-- [x] 사용자 정보 조회
-- [ ] 비밀번호 암호화 및 검증
+- [x] 사용자 정보 등록
+  - [x] 비밀번호 해싱
+- [ ] 사용자 정보 조회
 - [ ] 사용자 정보 수정
+- [ ] JWT 발급 및 검증
 
 ### 4. Gateway
 - [x] 요청 검증
@@ -83,22 +84,12 @@
 
 본 프로젝트를 실행하기 위해서는 Docker 및 Docker Compose가 설치되어 있어야 합니다.
 
-### 1. Clone this repository
-
-```bash
-git clone {{repo_url}}
-
-## How to setup
-
-Before running the application, make sure you have Docker and Docker Compose installed on your machine.
-
-1. Clone this repository
-
+0. Clone this repository
 ```bash
 git clone {{repo_url}}
 ```
 
-2. Change directory to the cloned repository
+1. Change directory to the cloned repository
 
 ```bash
 cd {{repo_name}}
@@ -114,5 +105,5 @@ chmod +x ./scripts/init.sh # if permission denied
 4. Run the script to start all services
 
 ```bash
-docker[-]compose up [-]d
+docker-compose up -d
 ```
