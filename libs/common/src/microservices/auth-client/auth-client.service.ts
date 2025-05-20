@@ -41,10 +41,7 @@ export class AuthClientService implements IAuthServiceClient {
     return result;
   }
 
-  public async verifyToken(
-    payload: { accessToken: string },
-    actor: Actor,
-  ): Promise<any> {
+  public async verifyToken(): Promise<any> {
     const response = this.client.send({ cmd: Auth.Event.USER_VERIFY }, {});
 
     const data = await firstValueFrom<any>(response);
@@ -52,10 +49,7 @@ export class AuthClientService implements IAuthServiceClient {
     return data;
   }
   public async refreshToken(): Promise<any> {
-    const response = this.client.send(
-      { cmd: Auth.Event.USER_REFRESH_TOKEN },
-      {},
-    );
+    const response = this.client.send({ cmd: Auth.Event.USER_REFRESH }, {});
 
     const data = await firstValueFrom<any>(response);
 
